@@ -68,8 +68,4 @@ public class EmployeePayrollService {
 	public void addNewEmployeeToDatabase(String name, double salary, LocalDate start, String gender) throws EmployeePayrollException {
 		employeePayrollList.add(employeePayrollDBService.addEmployeeToDatabase(name, salary, start, gender));
 	}
-	
-	public boolean checkEmployeePayrollSyncWithDatabase(String name) {
-		return false;
-	}
 }

@@ -158,4 +158,68 @@ public class EmployeePayrollDBService {
 		}
 		return employeePayrollData;
 	}
+	
+	public EmployeePayrollData addEmployeePayrollDetailsToDatabase(String name, double salary, LocalDate start, String gender)
+			throws EmployeePayrollException {
+		int employeeID = -1;
+		Connection connection = null;
+		EmployeePayrollData employeePayrollData = null;
+		try {
+			connection = this.getConnection();
+			connection.setAutoCommit(false);
+		} catch (SQLException sqlException) {
+			throw new EmployeePayrollException(sqlException.getMessage(),
+					EmployeePayrollException.ExceptionType.DatabaseException);
+		}
+		try (Statement statement = connection.createStatement()) {
+			String query = String.format("insert into employeepayroll(Name, Salary, Start, Gender) values ('%s', '%s', '%s', '%s')", name, salary, start, gender);
+			int rowAffected = statement.executeUpdate(query, statement.RETURN_GENERATED_KEYS);
+			if (rowAffected == 1) {
+				ResultSet resultSet = statement.getGeneratedKeys();
+				if (resultSet.next())
+					employeeID = resultSet.getInt(1);
+			}
+			employeePayrollData = new EmployeePayrollData(employeeID, name, salary, start);
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new EmployeePayrollException(e1.getMessage(),
+						EmployeePayrollException.ExceptionType.ConnectionFailed);
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			double deductions = salary * 0.2;
+			double taxablePay = salary - deductions;
+			double tax = taxablePay * 0.1;
+			double netPay = salary - tax;
+			String query = String.format("insert into payrolldetails(Emp_ID, Basic_Pay, Deductions, Taxable_Pay, Tax, Net_Pay) values ('%s', '%s', '%s', '%s', '%s', '%s')",
+					employeeID, salary, deductions, taxablePay, tax, netPay);
+			int rowAffected = statement.executeUpdate(query);
+			if (rowAffected == 1) {
+				employeePayrollData = new EmployeePayrollData(employeeID, name, salary, start);
+			}
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new EmployeePayrollException(e1.getMessage(),
+						EmployeePayrollException.ExceptionType.ConnectionFailed);
+			}
+		}
+		try {
+			connection.commit();
+		} catch (SQLException e) {
+			throw new EmployeePayrollException(e.getMessage(), EmployeePayrollException.ExceptionType.CommitFailed);
+		} finally {
+			if (connection != null)
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					throw new EmployeePayrollException(e.getMessage(),
+							EmployeePayrollException.ExceptionType.ResourcesNotClosedException);
+				}
+		}
+		return employeePayrollData;
+	}
 }

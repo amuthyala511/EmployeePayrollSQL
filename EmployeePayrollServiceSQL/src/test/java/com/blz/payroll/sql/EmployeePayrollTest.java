@@ -41,17 +41,17 @@ public class EmployeePayrollTest {
 	
 	@Test
 	public void givenEmployeePayrollData_CalculateTotalOfSalaries_ForMaleEmployees_AndReturnResult() throws EmployeePayrollException {
-		Assert.assertEquals(6000000, employeePayrollService.readEmployeePayrollData("Sum", "M"));
+		Assert.assertEquals(15000000, employeePayrollService.readEmployeePayrollData("Sum", "M"));
 	}
 	
 	@Test
 	public void givenEmployeePayrollData_CalculateTotalOfSalaries_ForFemaleEmployees_AndReturnResult() throws EmployeePayrollException {
-		Assert.assertEquals(1000000, employeePayrollService.readEmployeePayrollData("Sum", "F"));
+		Assert.assertEquals(10000000, employeePayrollService.readEmployeePayrollData("Sum", "F"));
 	}
 	
 	@Test
 	public void givenEmployeePayrollData_ShouldCalculateAverageOfSalaries_ForMaleEmployees() throws EmployeePayrollException {
-		Assert.assertEquals(3000000, employeePayrollService.readEmployeePayrollData("Avg", "M"));
+		Assert.assertEquals(5000000, employeePayrollService.readEmployeePayrollData("Avg", "M"));
 	}
 	
 	@Test

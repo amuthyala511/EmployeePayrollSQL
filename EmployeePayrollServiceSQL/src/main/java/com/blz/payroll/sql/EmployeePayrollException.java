@@ -2,7 +2,7 @@ package com.blz.payroll.sql;
 
 public class EmployeePayrollException extends Exception {
 	enum ExceptionType {
-		DatabaseException, NoSuchClass
+		DatabaseException, NoSuchClass, ConnectionFailed, ResourcesNotClosedException, CommitFailed
 	}
 	
 	public ExceptionType type;
