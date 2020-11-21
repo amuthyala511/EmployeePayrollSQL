@@ -64,4 +64,12 @@ public class EmployeePayrollService {
 	public int readEmployeePayrollAvgData(String function, String gender) throws EmployeePayrollException {
 		return employeePayrollDBService.readDataAvgPayroll(function, gender);
 	}
+	
+	public void addNewEmployeeToDatabase(String name, double salary, LocalDate start, String gender) throws EmployeePayrollException {
+		employeePayrollList.add(employeePayrollDBService.addEmployeeToDatabase(name, salary, start, gender));
+	}
+	
+	public boolean checkEmployeePayrollSyncWithDatabase(String name) {
+		return false;
+	}
 }

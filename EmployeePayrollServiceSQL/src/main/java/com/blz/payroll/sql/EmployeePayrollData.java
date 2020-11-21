@@ -7,14 +7,14 @@ public class EmployeePayrollData {
 	public String name;
 	public double salary;
 	public LocalDate startDate;
-	public String gender;
+	//public String gender;
 
-	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate, String gender) {
+	public EmployeePayrollData(int id, String name, double salary, LocalDate startDate) {
 		this.id = id;
 		this.name = name;
 		this.salary = salary;
 		this.startDate = startDate;
-		this.gender = gender;
+		//this.gender = gender;
 	}
 	
 	@Override
@@ -45,6 +45,6 @@ public class EmployeePayrollData {
 
 	@Override
 	public String toString() {
-		return "EmployeePayrollData [id=" + id + ", name=" + name + ", salary=" + salary + ", start=" + startDate + "Gender=" + gender + "]";
+		return "EmployeePayrollData [id=" + id + ", name=" + name + ", salary=" + salary + ", start=" + startDate + "]";
 	}
 }
