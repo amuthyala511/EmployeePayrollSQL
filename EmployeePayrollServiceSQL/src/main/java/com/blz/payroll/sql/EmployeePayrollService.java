@@ -56,4 +56,12 @@ public class EmployeePayrollService {
 		List<EmployeePayrollData> employeePayrollData = employeePayrollDBService.getEmployeePayrollData(name);
 		return employeePayrollData.get(0).equals(getEmployeePayrollData(name));
 	}
+	
+	public int readEmployeePayrollData(String function, String gender) throws EmployeePayrollException {
+		return employeePayrollDBService.readDataPayroll(function, gender);
+	}
+
+	public int readEmployeePayrollAvgData(String function, String gender) throws EmployeePayrollException {
+		return employeePayrollDBService.readDataAvgPayroll(function, gender);
+	}
 }

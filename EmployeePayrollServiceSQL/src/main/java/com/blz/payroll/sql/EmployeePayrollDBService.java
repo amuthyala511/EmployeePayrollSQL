@@ -109,4 +109,34 @@ public class EmployeePayrollDBService {
 					EmployeePayrollException.ExceptionType.DatabaseException);
 		}
 	}
+	
+	public int readDataPayroll(String total, String gender) throws EmployeePayrollException {
+		int sum = 0;
+		String query = String.format("select %s(Salary) from employeepayroll where gender = '%s' group by gender;", total, gender);
+		try (Connection connection = this.getConnection()) {
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			resultSet.next();
+			sum = resultSet.getInt(1);
+		} catch (SQLException e) {
+			throw new EmployeePayrollException(e.getMessage(),
+					EmployeePayrollException.ExceptionType.DatabaseException);
+		}
+		return sum;
+	}
+	
+	public int readDataAvgPayroll(String avg, String gender) throws EmployeePayrollException {
+		int avgTotal = 0;
+		String query = String.format("select %s(Salary) from employeepayroll where gender = '%s' group by gender;", avg, gender);
+		try (Connection connection = this.getConnection()) {
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			resultSet.next();
+			avgTotal = resultSet.getInt(1);
+		} catch (SQLException e) {
+			throw new EmployeePayrollException(e.getMessage(),
+					EmployeePayrollException.ExceptionType.DatabaseException);
+		}
+		return avgTotal;
+	}
 }
