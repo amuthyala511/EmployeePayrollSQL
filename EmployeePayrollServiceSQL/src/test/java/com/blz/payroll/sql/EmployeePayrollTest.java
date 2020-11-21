@@ -25,7 +25,7 @@ public class EmployeePayrollTest {
 	}
 	
 	@Test
-	public void givenEmployeePayroll_WhenUpdate_ShouldSyncWithDB() throws EmployeePayrollException, SQLException {
+	public void givenEmployeePayroll_WhenUpdated_ShouldSyncWithDB() throws EmployeePayrollException, SQLException {
 		List<EmployeePayrollData> employeePayrollData = employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
 		employeePayrollService.updateRecord("Terisa", 3000000);
 		boolean result = employeePayrollService.checkUpdateRecordSyncWithDatabase("Terisa");

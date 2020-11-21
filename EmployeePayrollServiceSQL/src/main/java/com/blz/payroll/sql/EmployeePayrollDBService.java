@@ -12,10 +12,18 @@ import java.util.List;
 
 public class EmployeePayrollDBService {
 	private PreparedStatement employeePayrollPreparedStatement;
+	private static EmployeePayrollDBService employeePayrollDBService;
 	
-	EmployeePayrollDBService() {
+	private EmployeePayrollDBService() {
 		
 	}
+	
+	public static EmployeePayrollDBService getInstance() {
+		if(employeePayrollDBService == null)
+			employeePayrollDBService = new EmployeePayrollDBService();
+		return employeePayrollDBService;
+	}
+	
 	private Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service?useSSL=false";
 		String userName = "root";
