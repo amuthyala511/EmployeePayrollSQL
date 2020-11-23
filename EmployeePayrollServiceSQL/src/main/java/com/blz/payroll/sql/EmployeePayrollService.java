@@ -69,7 +69,16 @@ public class EmployeePayrollService {
 		employeePayrollList.add(employeePayrollDBService.addEmployeeToDatabase(name, salary, start, gender));
 	}
 	
-	public void addEmployeeToDatabse(String name, double salary, LocalDate start, String gender, String department) throws EmployeePayrollException {
-		employeePayrollList.add(employeePayrollDBService.addEmployeeToDatabase(name, salary, start, gender, department));
+	public void addEmployeeToDatabse(String name, double salary, LocalDate start, String gender, String department, boolean active) throws EmployeePayrollException {
+		employeePayrollList.add(employeePayrollDBService.addEmployeeToDatabase(name, salary, start, gender, department, active));
+	}
+	
+	public void deleteEmployeeToPayroll(String name) throws EmployeePayrollException {
+		this.employeePayrollList = this.employeePayrollDBService.deleteEmployeeFromDatabase(name);
+	}
+
+	public boolean checkedRecordDeletedFromDatabase(String name) throws EmployeePayrollException {
+		List<EmployeePayrollData> employeePayrollData = employeePayrollDBService.getEmployeePayrollData(name);
+		return employeePayrollData.size() == 0 && getEmployeePayrollData(name) == null;
 	}
 }

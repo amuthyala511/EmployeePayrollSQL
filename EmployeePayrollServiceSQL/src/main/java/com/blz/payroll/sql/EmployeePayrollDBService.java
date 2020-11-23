@@ -223,7 +223,7 @@ public class EmployeePayrollDBService {
 		return employeePayrollData;
 	}
 	
-	public EmployeePayrollData addEmployeeToDatabase(String name, double salary, LocalDate start, String gender, String department) throws EmployeePayrollException {
+	public EmployeePayrollData addEmployeeToDatabase(String name, double salary, LocalDate start, String gender, String department, boolean is_active) throws EmployeePayrollException {
 		int employeeId = -1;
 		Connection connection = null;
 		EmployeePayrollData employeePayrollData = null;
@@ -238,6 +238,25 @@ public class EmployeePayrollDBService {
 			String query = String.format(
 					"insert into employee_payroll(Name, Salary, Start, Gender, Department) values ('%s', '%s', '%s', '%s', '%s')",
 					name, salary, start, gender, department);
+			int rowAffected = statement.executeUpdate(query, statement.RETURN_GENERATED_KEYS);
+			if (rowAffected == 1) {
+				ResultSet resultSet = statement.getGeneratedKeys();
+				if (resultSet.next())
+					employeeId = resultSet.getInt(1);
+			}
+			employeePayrollData = new EmployeePayrollData(employeeId, name, salary, start, department);
+		} catch (SQLException e) {
+			try {
+				connection.rollback();
+			} catch (SQLException e1) {
+				throw new EmployeePayrollException(e1.getMessage(),
+						EmployeePayrollException.ExceptionType.ConnectionFailed);
+			}
+		}
+		try (Statement statement = connection.createStatement()) {
+			List<String> departmentList = new ArrayList<>(Arrays.asList("sales", "marketing"));
+			String query = String.format("insert into department(emp_id,dept_name) values ('%s', '%s')", employeeId,
+					department);
 			int rowAffected = statement.executeUpdate(query, statement.RETURN_GENERATED_KEYS);
 			if (rowAffected == 1) {
 				ResultSet resultSet = statement.getGeneratedKeys();
@@ -304,6 +323,37 @@ public class EmployeePayrollDBService {
 					throw new EmployeePayrollException(e.getMessage(),
 							EmployeePayrollException.ExceptionType.ResourcesNotClosedException);
 				}
+		}
+		return employeePayrollData;
+	}
+	
+	public List<EmployeePayrollData> deleteEmployeeFromDatabase(String name) throws EmployeePayrollException {
+		String query = String.format("update employee_payroll set is_active = false where name = '%s';", name);
+		try (Connection connection = this.getConnection()) {
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(query);
+			return this.readData();
+		} catch (SQLException e) {
+			throw new EmployeePayrollException(e.getMessage(), EmployeePayrollException.ExceptionType.ConnectionFailed);
+		}
+	}
+
+	private List<EmployeePayrollData> readData() throws EmployeePayrollException {
+		String query;
+		query = "select * from employee_payroll";
+		return getEmployeePayrollDB(query);
+	}
+
+	private List<EmployeePayrollData> getEmployeePayrollDB(String query) throws EmployeePayrollException {
+		List<EmployeePayrollData> employeePayrollData;
+		try {
+			Connection connection = this.getConnection();
+			Statement statement = connection.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+			employeePayrollData = this.getEmployeePayrollData(resultSet);
+		} catch (SQLException e) {
+			throw new EmployeePayrollException(e.getMessage(),
+					EmployeePayrollException.ExceptionType.DatabaseException);
 		}
 		return employeePayrollData;
 	}

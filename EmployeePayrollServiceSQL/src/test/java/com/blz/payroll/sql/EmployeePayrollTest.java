@@ -70,8 +70,16 @@ public class EmployeePayrollTest {
 	@Test
 	public void givenEmployeePayrollData_WhenAddedNewRecord_ShouldReturnUpdatedValue() throws EmployeePayrollException, SQLException {
 		employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
-		employeePayrollService.addEmployeeToDatabse("Stella", 4000000.00, LocalDate.now(), "F", "Marketing");
+		employeePayrollService.addEmployeeToDatabse("Stella", 4000000.00, LocalDate.now(), "F", "Marketing", true);
 		boolean result = employeePayrollService.checkUpdateRecordSyncWithDatabase("Stella");
+		Assert.assertTrue(result);
+	}
+	
+	@Test
+	public void givenEmployeePayroll_WhenDeleteRecord_ShouldSyncWithDB() throws EmployeePayrollException, SQLException {
+		employeePayrollService.readEmployeePayrollData(IOService.DB_IO);
+		employeePayrollService.deleteEmployeeToPayroll("Joseph");
+		boolean result = employeePayrollService.checkedRecordDeletedFromDatabase("Joseph");
 		Assert.assertTrue(result);
 	}
 }
